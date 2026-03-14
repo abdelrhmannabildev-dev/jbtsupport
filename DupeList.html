@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
     <ul class="nav-links">
@@ -16,36 +15,125 @@
       <li><a href="ValueList.html">Values</a></li>
       <li><a href="DupeList.html" class="active">Dupe List</a></li>
       <li><a href="Calculator.html">Trade Calculator</a></li>
+      <li><a href="Hoard.html">My Hoard</a></li>
       <li><a href="AboutUs.html">About Us</a></li>
     </ul>
   </nav>
 
-  <main class="values-page">
-
-    <!-- HEADER -->
-    <section class="values-header">
+  <main class="dupe-page">
+    <!-- HERO -->
+    <div class="dupe-hero">
+      <span class="dupe-hero-icon">🧬</span>
       <h1>Dupe Lookup</h1>
       <p>
-        Search a Roblox username or user ID to view all known duped vehicles
-        linked to that account.
+        Search any Roblox username or user ID to see all known duped items
+        linked to that account. Protect your trades — verify before you deal.
       </p>
-
-      <div class="search-wrapper">
+      <div class="dupe-warning">
+        <span class="dupe-warning-icon">⚠️</span>
+        <span>
+            Duped items can reduce the value of item.
+            A duped item is an item that has been duplicated in the past and shares the same original ID as another copy.
+            Because of this history, traders usually consider duped items less valuable than clean items. 
+            Always check an item's status before accepting a trade.
+        </span>
+      </div>
+      <div class="dupe-search-wrap">
         <input
           type="text"
           id="dupeSearch"
-          class="search-input"
-          placeholder="Search Roblox username or user ID…"
+          class="dupe-search-input"
+          placeholder="Enter Roblox username or user ID…"
+          autocomplete="off"
+          spellcheck="false"
         />
+        <button class="dupe-search-btn" id="dupeSearchBtn" title="Search">🔍</button>
       </div>
-    </section>
+      <div class="dupe-search-hints">
+        <span class="dupe-hint-chip">Enter = Search</span>
+        <span class="dupe-hint-chip">Username or numeric ID</span>
+        <span class="dupe-hint-chip">@username works too</span>
+      </div>
+    </div>
 
-    <!-- RESULTS -->
-    <section class="values-container">
-      <div id="dupeResults" class="values-grid"></div>
-    </section>
+    <!-- RESULTS AREA -->
+    <div class="dupe-results-wrap" id="dupeResultsWrap">
+      <!-- Filled by JS -->
+    </div>
 
+    <!-- WHAT ARE DUPES INFO SECTION -->
+    <div class="dupe-info-section">
+      <div class="dupe-info-grid">
+<div class="dupe-info-card">
+  <div class="dupe-info-icon">🔄</div>
+  <h3>What Is a Dupe?</h3>
+  <p>
+    In Jailbreak trading, a duped item refers to a copy of a limited or retired vehicle
+    created through glitches or exploits that should not normally exist in multiple copies.
+    Duped vehicles have the same original owner ID as another copy, which is why they are
+    identified as duplicates in community databases and value lists.
+  </p>
+</div>
+
+<div class="dupe-info-card">
+  <div class="dupe-info-icon">⚖️</div>
+  <h3>Why It Matters</h3>
+  <p>
+    Because duped items increase the effective supply, they are generally worth less
+    than their clean counterparts in the trading market. Most traders price duped copies
+    lower, even though owning a duped item doesn’t affect gameplay and doesn’t get removed
+    by the game itself.
+  </p>
+</div>
+
+<div class="dupe-info-card">
+  <div class="dupe-info-icon">🛡️</div>
+  <h3>How to Trade Wisely</h3>
+  <p>
+    Before you trade, check an item’s legitimacy using trusted dupe lists or tools like
+    dupe finders on community value sites. Review the original owner’s username and item
+    history to avoid overpaying for a duped copy if you’re focused on high-value trading.
+  </p>
+</div>
+
+      </div>
+    </div>
   </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Jailbreak Exchange</div>
+        <p>Community-driven values, trade tools, and dupe awareness for the Roblox Jailbreak trading scene.</p>
+        <div class="footer-social">
+          <a href="https://discord.gg/u7ucGJjtGU" target="_blank" class="footer-social-btn discord">💬 Discord</a>
+          <a href="mailto:jailbreakexchange@gmail.com" class="footer-social-btn email">📧 Email</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul class="footer-links">
+          <li><a href="ValueList.html">Item Values</a></li>
+          <li><a href="Calculator.html">Trade Calculator</a></li>
+          <li><a href="DupeList.html">Dupe Lookup</a></li>
+          <li><a href="Hoard.html">My Hoard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <ul class="footer-links">
+          <li><a href="AboutUs.html">About Us</a></li>
+          <li><a href="https://discord.gg/u7ucGJjtGU" target="_blank">Discord Server</a></li>
+          <li><a href="mailto:jailbreakexchange@gmail.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Jailbreak Exchange. Not affiliated with Roblox or Badimo.</p>
+      <span>jailbreakexchange@gmail.com</span>
+    </div>
+  </footer>
 
   <script src="DupeList.js"></script>
 </body>

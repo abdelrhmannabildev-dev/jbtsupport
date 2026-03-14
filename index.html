@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jailbreak Exchange</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- NAVBAR (keep your existing one exactly as-is) -->
   <nav class="navbar">
     <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
     <ul class="nav-links">
@@ -16,44 +15,103 @@
       <li><a href="ValueList.html">Values</a></li>
       <li><a href="DupeList.html">Dupe List</a></li>
       <li><a href="Calculator.html">Trade Calculator</a></li>
+      <li><a href="Hoard.html">My Hoard</a></li>
       <li><a href="AboutUs.html">About Us</a></li>
     </ul>
   </nav>
 
-  <!-- HERO SECTION -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-overlay"></div>
-    
     <div class="hero-content">
-      <h1>
-        Jailbreak Exchange
-      </h1>
-      <p>
-        Trusted values, fair trades, and dupe awareness for the Roblox
-        Jailbreak trading community.
-      </p>
-
+      <span class="hero-eyebrow">Roblox Jailbreak Trading</span>
+      <h1>Jailbreak Exchange</h1>
+      <p>Trusted values, smart trade analysis, and dupe protection for the Jailbreak community.</p>
       <div class="hero-buttons">
         <a href="ValueList.html" class="btn primary">View Values →</a>
-        <a href="https://discord.gg/u7ucGJjtGU" class="btn secondary">Join Discord</a>
+        <a href="https://discord.gg/u7ucGJjtGU" target="_blank" class="btn secondary">Join Discord</a>
       </div>
     </div>
   </section>
 
-  <!-- MAIN CONTENT -->
-  <section class="home-content">
-    <h2>Our Impact</h2>
-    <p>
-      We help players trade smarter with accurate values, trade analysis,
-      and dupe detection tools.
-    </p>
+  <!-- STATS STRIP -->
+  <div class="home-stats">
+    <div class="home-stat">
+      <div class="home-stat-num">899+</div>
+      <div class="home-stat-label">Items Tracked</div>
+    </div>
+    <div class="home-stat">
+      <div class="home-stat-num">14</div>
+      <div class="home-stat-label">Categories</div>
+    </div>
+    <div class="home-stat">
+      <div class="home-stat-num">Live</div>
+      <div class="home-stat-label">Dupe Database</div>
+    </div>
+    <div class="home-stat">
+      <div class="home-stat-num">Free</div>
+      <div class="home-stat-label">Always</div>
+    </div>
+  </div>
 
+  <!-- FEATURES -->
+  <section class="home-content">
+    <h2>Everything You Need</h2>
+    <p>One place for accurate values, trade analysis, and dupe awareness.</p>
     <div class="impact-cards">
-      <div class="card">📊 Accurate Item Values</div>
-      <div class="card">🔄 Win / Fair / Loss Calculator</div>
-      <div class="card">🧬 Dupe Detection</div>
+      <a href="ValueList.html" class="card" style="text-decoration:none">
+        <h3>📊 Item Values</h3>
+        <p>Regularly updated values for every Jailbreak item — vehicles, cosmetics, limiteds, and more. Based on real demand and market trends.</p>
+      </a>
+      <a href="Calculator.html" class="card" style="text-decoration:none">
+        <h3>🔄 Trade Calculator</h3>
+        <p>Smart verdict engine that factors in value, demand tiers, upgrade premiums, and stack bonuses. Know if you're winning or losing before you commit.</p>
+      </a>
+      <a href="DupeList.html" class="card" style="text-decoration:none">
+        <h3>🧬 Dupe Detection</h3>
+        <p>Look up any Roblox username or user ID to see known duped items on their account. Protect yourself before every trade.</p>
+      </a>
+      <a href="Hoard.html" class="card" style="text-decoration:none">
+        <h3>🗄 Hoard Manager</h3>
+        <p>Mark items as investment holds. The Trade Calculator will ignore demand penalties for hoarded items so your strategy isn't penalised.</p>
+      </a>
     </div>
   </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Jailbreak Exchange</div>
+        <p>Community-driven values, trade tools, and dupe awareness for the Roblox Jailbreak trading scene.</p>
+        <div class="footer-social">
+          <a href="https://discord.gg/u7ucGJjtGU" target="_blank" class="footer-social-btn discord">💬 Discord</a>
+          <a href="mailto:jailbreakexchange@gmail.com" class="footer-social-btn email">📧 Email</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul class="footer-links">
+          <li><a href="ValueList.html">Item Values</a></li>
+          <li><a href="Calculator.html">Trade Calculator</a></li>
+          <li><a href="DupeList.html">Dupe Lookup</a></li>
+          <li><a href="Hoard.html">My Hoard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <ul class="footer-links">
+          <li><a href="AboutUs.html">About Us</a></li>
+          <li><a href="https://discord.gg/u7ucGJjtGU" target="_blank">Discord Server</a></li>
+          <li><a href="mailto:jailbreakexchange@gmail.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Jailbreak Exchange. Not affiliated with Roblox or Badimo.</p>
+      <span>jailbreakexchange@gmail.com</span>
+    </div>
+  </footer>
 
 </body>
 </html>

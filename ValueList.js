@@ -3,21 +3,22 @@ const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com/";
 const CSV_FILE = "items.csv";
 
 const CATEGORY_CONFIG = {
-  "Vehicle":      "#3b82f6", // blue (cars / tech)
-  "Body Color":   "#f43f5e", // red / paint
-  "Texture":      "#a78bfa", // purple (design)
-  "Rim":          "#f59e0b", // metallic orange
-  "Tire Style":   "#22c55e", // green (performance)
-  "Tire Sticker": "#06b6d4", // cyan (decals)
-  "Spoiler":      "#fb923c", // sporty orange
-  "Drift":        "#ef4444", // aggressive red
-  "Horns":        "#eab308", // yellow (sound/attention)
-  "HyperChrome":  "#ec4899", // neon pink
-  "Seasonal":     "#14b8a6", // teal
-  "Limited":      "#facc15", // gold
-  "Furniture":    "#a16207", // wood/brown
-  "Weapon Skin":  "#64748b"  // steel gray
+  "Body Color":   "#a855f7",
+  "Drift":        "#f97316",
+  "Furniture":    "#a16207",
+  "Horns":        "#3b82f6",
+  "HyperChrome":  "#ec4899",
+  "Limited":      "#facc15",
+  "Rim":          "#8b5cf6",
+  "Seasonal":     "#22d3ee",
+  "Spoiler":      "#f59e0b",
+  "Texture":      "#94a3b8",
+  "Tire Sticker": "#06b6d4",
+  "Tire Style":   "#22c55e",
+  "Vehicle":      "#ef4444",
+  "Weapon Skin":  "#64748b"
 };
+
 // ─── State ────────────────────────────────────────────────────────────────────
 let allItems       = [];
 let filteredItems  = [];
@@ -243,7 +244,7 @@ function showDetail(item) {
       </nav>
 
       <div class="detail-hero">
-        <div class="detail-hero-glow" style="background:radial-gradient(ellipse at top right,${color}26 30%,transparent 65%)"></div>
+        <div class="detail-hero-glow" style="background:radial-gradient(ellipse at top left,${color}26 0%,transparent 65%)"></div>
         <div class="detail-hero-inner">
 
           <div class="detail-hero-left">
@@ -264,6 +265,7 @@ function showDetail(item) {
                 <div class="stat-value">${hasDuped ? fmt(item.duped_value) : "N/A"}</div>
                 <div class="stat-sub">${hasDuped ? "Duped condition" : "Not applicable"}</div>
               </div>
+              ${hasDuped ? '<div class="detail-stat-card"><div class="stat-label">Value Loss</div><div class="stat-value stat-loss-val">-' + lossPct + '%</div><div class="stat-sub">When duped</div></div>' : ""}
             </div>
           </div>
 
@@ -286,14 +288,14 @@ function showDetail(item) {
 
       <div class="detail-info-section">
         <h2 class="section-title">Item Details</h2>
-        <div class="detail-table" >
-          ${detailRow("Name",         item.name,color ) }
+        <div class="detail-table">
+          ${detailRow("Name",         item.name)}
           ${detailRow("Category",     item.category, color)}
-          ${detailRow("Cash Value",   fmt(item.value), color)}
-          ${detailRow("Duped Value",  fmt(item.duped_value), color)}
-          ${detailRow("Demand",       item.demand || "—", color)}
-          ${item.rarity       ? detailRow("Rarity",       item.rarity, color)       : ""}
-          ${item.last_updated ? detailRow("Last Updated", item.last_updated, color) : ""}
+          ${detailRow("Cash Value",   fmt(item.value))}
+          ${detailRow("Duped Value",  fmt(item.duped_value))}
+          ${detailRow("Demand",       item.demand || "—")}
+          ${item.rarity       ? detailRow("Rarity",       item.rarity)       : ""}
+          ${item.last_updated ? detailRow("Last Updated", item.last_updated) : ""}
         </div>
       </div>
 
@@ -351,17 +353,10 @@ function showNotFound(slug) {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function detailRow(label, value, color) {
-
-  const textColor = label === "Category" ? color:"white";
-
-  const val = `<span style="color:${textColor};font-weight:600">${value}</span>`;
-
-  return `
-  <div class="detail-row" style="border:2px solid ${color};padding:12px 10px; ">
-      <span class="detail-label">${label}</span>
-      ${val}
-  </div>`;
+  const val = color ? '<span style="color:' + color + ';font-weight:600">' + value + '</span>' : '<span>' + value + '</span>';
+  return '<div class="detail-row"><span class="detail-label">' + label + '</span>' + val + '</div>';
 }
+
 function numVal(v) {
   if (!v || String(v).toUpperCase() === "N/A") return 0;
   return Number(String(v).replace(/,/g, "")) || 0;

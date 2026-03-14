@@ -1,51 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Item Values | Jailbreak Exchange</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- NAVBAR (UNCHANGED) -->
   <nav class="navbar">
-    <div class="logo">Jailbreak Exchange</div>
+    <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="ValueList.html" class="active">Values</a></li>
       <li><a href="DupeList.html">Dupe List</a></li>
       <li><a href="Calculator.html">Trade Calculator</a></li>
+      <li><a href="Hoard.html">My Hoard</a></li>
       <li><a href="AboutUs.html">About Us</a></li>
     </ul>
   </nav>
 
-  <main class="values-page">
-
-    <!-- FILTERS -->
-    <div id="categoryFilters" class="category-filters"></div>
-
-    <!-- HEADER -->
-    <section class="values-header">
-      <h1>Jailbreak Exchange Values</h1>
-      <p>Community-driven Jailbreak values built on real data, with zero manipulation.</p>
-      <div class="search-wrapper">
-        <input
-          type="text"
-          id="searchInput"
-          class="search-input"
-          placeholder="Search items...🔎"
-        />
-      </div>
-    </section>
-    
-
-    <!-- GRID -->
-    <section class="values-container">
-      <div id="valuesGrid" class="values-grid"></div>
-    </section>
-
+  <main class="values-page" id="valuesMain">
+    <!-- JS renders category filters + grid here -->
   </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Jailbreak Exchange</div>
+        <p>Community-driven values, trade tools, and dupe awareness for the Roblox Jailbreak trading scene.</p>
+        <div class="footer-social">
+          <a href="https://discord.gg/u7ucGJjtGU" target="_blank" class="footer-social-btn discord">💬 Discord</a>
+          <a href="mailto:jailbreakexchange@gmail.com" class="footer-social-btn email">📧 Email</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul class="footer-links">
+          <li><a href="ValueList.html">Item Values</a></li>
+          <li><a href="Calculator.html">Trade Calculator</a></li>
+          <li><a href="DupeList.html">Dupe Lookup</a></li>
+          <li><a href="Hoard.html">My Hoard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <ul class="footer-links">
+          <li><a href="AboutUs.html">About Us</a></li>
+          <li><a href="https://discord.gg/u7ucGJjtGU" target="_blank">Discord Server</a></li>
+          <li><a href="mailto:jailbreakexchange@gmail.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Jailbreak Exchange. Not affiliated with Roblox or Badimo.</p>
+      <span>jailbreakexchange@gmail.com</span>
+    </div>
+  </footer>
 
   <script src="ValueList.js"></script>
 </body>

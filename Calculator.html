@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
     <ul class="nav-links">
@@ -16,28 +15,42 @@
       <li><a href="ValueList.html">Values</a></li>
       <li><a href="DupeList.html">Dupe List</a></li>
       <li><a href="Calculator.html" class="active">Trade Calculator</a></li>
-      <li><a href="AboutUs.html">About Us</a></li>
+      <li><a href="Hoard.html">My Hoard</a></li>
+      <li><a href="Hoard.html">My Hoard</a></li>
+      <li><a href="AboutUs.html">About</a></li>
     </ul>
   </nav>
 
   <main class="calculator-page">
+
     <section class="calc-header">
-        <h1>Jailbreak Trade Calculator</h1>
-        <p>
-            Add items to both sides to compare values instantly.
-            Toggle clean or duped items to see accurate trade differences.
-        </p>
+      <h1>Trade Calculator</h1>
+      <p>Smart verdict based on value, demand, upgrade factor, and stack bonuses.</p>
     </section>
 
-    <div class="trade-balance-bar" id="tradeBalanceBar" aria-hidden="true">
-      <div class="trade-balance-track">
-        <div class="trade-balance-marker" id="tradeBalanceMarker"></div>
+    <!-- VERDICT BAR -->
+    <div class="verdict-bar-wrapper" id="verdictBarWrapper">
+      <div class="verdict-track-labels">
+        <span class="vtl-loss">Big Loss</span>
+        <span class="vtl-fair">Fair</span>
+        <span class="vtl-win">Big Win</span>
       </div>
+      <div class="verdict-track-wrap">
+        <div class="verdict-track"></div>
+        <div class="verdict-arrow" id="verdictNeedle">▲</div>
+      </div>
+      <div class="verdict-label" id="verdictLabel">Add items to both sides</div>
+    </div>
+
+    <!-- HOARD NOTICE (shown when hoarded items are in trade) -->
+    <div class="hoard-notice" id="hoardNotice" style="display:none">
+      🗄 Some items are marked as <strong>hoarded</strong> — demand penalty ignored for those.
+      <a href="Hoard.html">Manage hoard →</a>
     </div>
 
     <!-- ACTION BUTTONS -->
     <div class="calc-actions">
-      <button id="swapBtn">⇄ Swap Sides</button>
+      <button id="swapBtn">⇄ Swap</button>
       <button id="clearBtn" class="danger">🗑 Clear</button>
     </div>
 
@@ -47,11 +60,11 @@
       <div class="trade-side offering">
         <h2>Offering</h2>
         <div class="trade-items-wrapper" id="offeringWrapper">
-        <div class="trade-empty" data-side="offering">
+          <div class="trade-empty" id="offeringEmpty">
             <span class="plus">+</span>
             <span class="text">No items added yet</span>
-        </div>
-        <div class="trade-items" id="offeringItems"></div>
+          </div>
+          <div class="trade-items" id="offeringItems"></div>
         </div>
         <div class="trade-total" id="offeringTotal"></div>
       </div>
@@ -59,37 +72,82 @@
       <div class="trade-side requesting">
         <h2>Requesting</h2>
         <div class="trade-items-wrapper" id="requestingWrapper">
-        <div class="trade-empty" data-side="requesting">
+          <div class="trade-empty" id="requestingEmpty">
             <span class="plus">+</span>
             <span class="text">No items added yet</span>
-        </div>
-        <div class="trade-items" id="requestingItems"></div>
+          </div>
+          <div class="trade-items" id="requestingItems"></div>
         </div>
         <div class="trade-total" id="requestingTotal"></div>
       </div>
 
     </div>
 
-    <!-- DIFFERENCE -->
-    <div id="tradeDifference" class="trade-difference"></div>
+    <!-- SCORE BREAKDOWN (collapsed by default) -->
+    <div class="score-breakdown" id="scoreBreakdown" style="display:none">
+      <div class="breakdown-row" id="bdRawDiff"></div>
+      <div class="breakdown-row" id="bdDemandAdj"></div>
+      <div class="breakdown-row" id="bdStackBonus"></div>
+      <div class="breakdown-row" id="bdUpgradeOP"></div>
+    </div>
 
     <!-- ITEM BROWSER -->
     <section class="values-container" id="itemBrowser">
-
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search items..."
-        />
-
-        <div class="item-browser">
-            <div id="valuesGrid" class="values-grid"></div>
-        </div>
-
+      <input type="text" id="searchInput" placeholder="Search items to add…" />
+      <div class="item-browser">
+        <div id="valuesGrid" class="values-grid"></div>
+      </div>
     </section>
 
   </main>
 
-  <script src="Calculator.js"></script>
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Jailbreak Exchange</div>
+        <p>Community-driven values, trade tools, and dupe awareness for the Roblox Jailbreak trading scene.</p>
+        <div class="footer-social">
+          <a href="https://discord.gg/u7ucGJjtGU" target="_blank" class="footer-social-btn discord">💬 Discord</a>
+          <a href="/cdn-cgi/l/email-protection#f59f949c99978790949e908d969d949b9290b59298949c99db969a98" class="footer-social-btn email">📧 Email</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Tools</h4><ul class="footer-links"><li><a href="ValueList.html">Item Values</a></li><li><a href="Calculator.html">Trade Calculator</a></li><li><a href="DupeList.html">Dupe Lookup</a></li><li><a href="Hoard.html">My Hoard</a></li></ul></div>
+      <div class="footer-col"><h4>Community</h4><ul class="footer-links"><li><a href="AboutUs.html">About Us</a></li><li><a href="https://discord.gg/u7ucGJjtGU" target="_blank">Discord Server</a></li><li><a href="/cdn-cgi/l/email-protection#deb4bfb7b2bcacbbbfb5bba6bdb6bfb0b9bb9eb9b3bfb7b2f0bdb1b3">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 Jailbreak Exchange. Not affiliated with Roblox or Badimo.</p><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="acc6cdc5c0cedec9cdc7c9d4cfc4cdc2cbc9eccbc1cdc5c082cfc3c1">[email&#160;protected]</a></span></div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="Calculator.js"></script>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Jailbreak Exchange</div>
+        <p>Community-driven platform for Roblox Jailbreak traders. Fair data, zero manipulation.</p>
+        <div class="footer-social">
+          <a href="https://discord.gg/u7ucGJjtGU" target="_blank" class="footer-social-btn discord">💬 Discord</a>
+          <a href="/cdn-cgi/l/email-protection#86ece7efeae4f4e3e7ede3fee5eee7e8e1e3c6e1ebe7efeaa8e5e9eb" class="footer-social-btn email">📧 Email</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul class="footer-links">
+          <li><a href="ValueList.html">Item Values</a></li>
+          <li><a href="Calculator.html">Trade Calculator</a></li>
+          <li><a href="DupeList.html">Dupe Lookup</a></li>
+          <li><a href="Hoard.html">Hoard Manager</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <di class="footer-links">
+          <li><a href="https://discord.gg/u7ucGJjtGU" target="_blank">Discord Server</a></li>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Jailbreak Exchange. Not affiliated with Roblox or Badimo.</p>
+      <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86ece7efeae4f4e3e7ede3fee5eee7e8e1e3c6e1ebe7efeaa8e5e9eb">[email&#160;protected]</a></span>
+    </div>
+  </footer>
 </body>
 </html>
