@@ -16,7 +16,6 @@
       <li><a href="DupeList.html">Dupe List</a></li>
       <li><a href="Calculator.html" class="active">Trade Calculator</a></li>
       <li><a href="Hoard.html">My Hoard</a></li>
-      <li><a href="Hoard.html">My Hoard</a></li>
       <li><a href="AboutUs.html">About</a></li>
     </ul>
   </nav>
@@ -27,6 +26,48 @@
       <h1>Trade Calculator</h1>
       <p>Smart verdict based on value, demand, upgrade factor, and stack bonuses.</p>
     </section>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-it-works" id="howItWorks">
+      <button class="hiw-toggle" id="hiwToggle">
+        <span>⚙ How the verdict works</span>
+        <span class="hiw-arrow">▾</span>
+      </button>
+      <div class="hiw-body" id="hiwBody">
+        <div class="hiw-grid">
+          <div class="hiw-card">
+            <div class="hiw-icon">💰</div>
+            <div class="hiw-title">Item Value</div>
+            <p>Every item has a market value. The calculator starts with the raw difference between what you give and what you get.</p>
+          </div>
+          <div class="hiw-card">
+            <div class="hiw-icon">📈</div>
+            <div class="hiw-title">Demand</div>
+            <p>High demand items are easier to re-trade, so they're worth more in practice. Low demand items are harder to move, which lowers their real value. This is factored into both sides of the trade.</p>
+          </div>
+          <div class="hiw-card">
+            <div class="hiw-icon">⬆ Upgrade OP</div>
+            <div class="hiw-title">Upgrade Tax</div>
+            <p>When you consolidate many items into one, the person receiving multiple items needs a small premium for the extra work of re-trading them. This is a normal ~500k overpay. Same logic applies in reverse for downgrade trades.</p>
+          </div>
+          <div class="hiw-card">
+            <div class="hiw-icon">📦</div>
+            <div class="hiw-title">Hoard Mode</div>
+            <p>If you're holding an item as a long-term investment, mark it in <a href="Hoard.html" style="color:var(--accent)">My Hoard</a>. You can set your own personal value and demand — the calculator uses your estimate instead of the market rate, so a low-demand item you believe in won't drag your verdict down.</p>
+          </div>
+          <div class="hiw-card">
+            <div class="hiw-icon">📦×8</div>
+            <div class="hiw-title">Stack Bonus</div>
+            <p>Offering 3 or more identical high-demand items gives a small bundle bonus — collectors often pay a slight premium for stacks.</p>
+          </div>
+          <div class="hiw-card">
+            <div class="hiw-icon">⚖️</div>
+            <div class="hiw-title">Verdict Zones</div>
+            <p>The bar shows where your trade lands: <span style="color:#f87171">Big Loss</span> · <span style="color:#fca5a5">Loss</span> · <span style="color:#94a3b8">Fair</span> · <span style="color:#86efac">Win</span> · <span style="color:#4ade80">Big Win</span>. Fair means the trade is balanced after all factors. Win means you come out ahead.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- VERDICT BAR -->
     <div class="verdict-bar-wrapper" id="verdictBarWrapper">
@@ -138,15 +179,6 @@
           <li><a href="Hoard.html">Hoard Manager</a></li>
         </ul>
       </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <di class="footer-links">
-          <li><a href="https://discord.gg/u7ucGJjtGU" target="_blank">Discord Server</a></li>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2025 Jailbreak Exchange. Not affiliated with Roblox or Badimo.</p>
-      <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86ece7efeae4f4e3e7ede3fee5eee7e8e1e3c6e1ebe7efeaa8e5e9eb">[email&#160;protected]</a></span>
     </div>
   </footer>
 </body>

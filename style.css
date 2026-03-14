@@ -561,3 +561,229 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   .home-stats { flex-wrap: wrap; }
   .home-stat { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
 }
+
+/* ══════════════════════════════════════════════════════
+   HOW IT WORKS CARD
+══════════════════════════════════════════════════════ */
+.how-it-works{
+  max-width:900px;
+  margin:0 auto 20px;
+  padding:0 24px;
+}
+
+.hiw-toggle{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 18px;
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text-muted);
+  font-family:var(--fd);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+}
+
+.hiw-toggle:hover{
+  border-color:rgba(56,189,248,.25);
+  color:var(--accent);
+  background:rgba(56,189,248,.04);
+}
+
+.hiw-arrow{
+  font-size:14px;
+  transition:transform .25s ease;
+  display:inline-block;
+}
+
+.hiw-body{
+  display:none;
+  padding:16px 0 4px;
+}
+
+.hiw-body.hiw-open{ display:block; }
+
+.hiw-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;
+}
+
+.hiw-card{
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:16px 18px;
+  transition:border-color .2s;
+}
+
+.hiw-card:hover{ border-color:rgba(56,189,248,.18); }
+
+.hiw-icon{
+  font-family:var(--fd);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.3px;
+  color:var(--accent);
+  margin-bottom:6px;
+}
+
+.hiw-title{
+  font-family:var(--fd);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.3px;
+  color:#f1f5f9;
+  margin-bottom:6px;
+}
+
+.hiw-card p{
+  font-size:13px;
+  color:var(--text-muted);
+  line-height:1.6;
+}
+
+/* ══════════════════════════════════════════════════════
+   HOARD CUSTOM VALUE / DEMAND INPUTS
+══════════════════════════════════════════════════════ */
+.hoard-market-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 0 10px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  margin-bottom:12px;
+}
+
+.hoard-mkt-label{
+  font-family:var(--fm);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:var(--text-muted);
+  flex-shrink:0;
+}
+
+.hoard-mkt-val{
+  font-family:var(--fm);
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  flex:1;
+}
+
+.hoard-custom-section{
+  margin-bottom:10px;
+}
+
+.hoard-custom-label{
+  font-family:var(--fd);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:8px;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+
+.hoard-custom-hint{
+  font-family:var(--fb);
+  font-size:11px;
+  font-weight:400;
+  text-transform:none;
+  letter-spacing:0;
+  color:var(--text-muted);
+}
+
+.hoard-custom-row{
+  display:flex;
+  gap:8px;
+  align-items:stretch;
+}
+
+.hoard-input-wrap{
+  position:relative;
+  flex:1;
+}
+
+.hoard-input-prefix{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:13px;
+  pointer-events:none;
+}
+
+.hoard-custom-input{
+  width:100%;
+  padding:9px 10px 9px 30px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text);
+  font-family:var(--fm);
+  font-size:13px;
+  outline:none;
+  caret-color:var(--accent);
+  transition:border-color .2s,box-shadow .2s;
+}
+
+.hoard-custom-input::placeholder{ color:var(--text-dim); }
+
+.hoard-custom-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(56,189,248,.12);
+}
+
+.hoard-custom-select{
+  padding:9px 12px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text);
+  font-family:var(--fb);
+  font-size:13px;
+  outline:none;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:border-color .2s;
+}
+
+.hoard-custom-select:focus{ border-color:var(--accent); }
+
+.hoard-override-active{
+  margin-top:8px;
+  font-family:var(--fm);
+  font-size:11.5px;
+  color:#4ade80;
+  background:rgba(34,197,94,.07);
+  border:1px solid rgba(34,197,94,.18);
+  border-radius:6px;
+  padding:5px 10px;
+  line-height:1.5;
+}
+
+.hoard-override-inactive{
+  margin-top:8px;
+  font-family:var(--fm);
+  font-size:11.5px;
+  color:var(--text-dim);
+}
+
+/* Custom value tag inside trade item */
+.custom-val-tag{
+  font-size:10px;
+  color:var(--accent);
+  font-family:var(--fm);
+  opacity:.8;
+}

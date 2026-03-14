@@ -92,14 +92,27 @@ const VERDICT_BANDS = [
 let allItems        = [];
 let offeringItems   = [];
 let requestingItems = [];
-let hoardedNames    = new Set(); // loaded from localStorage
+let hoardedNames = new Set(); // item name → quick lookup
+let hoardData    = {};        // item name → { customValue, customDemand }
 
-// ─── Load hoard from localStorage ────────────────────────────────────────────
+// ─── Load hoard (v2: custom value+demand per item) ────────────────────────────
 function loadHoard() {
   try {
-    const saved = JSON.parse(localStorage.getItem("jbe_hoard") || "[]");
-    hoardedNames = new Set(saved);
-  } catch { hoardedNames = new Set(); }
+    const v2 = localStorage.getItem("jbe_hoard_v2");
+    if (v2) {
+      hoardData    = JSON.parse(v2);
+      hoardedNames = new Set(Object.keys(hoardData));
+      return;
+    }
+    // Migrate old format (plain array of names)
+    const old = localStorage.getItem("jbe_hoard");
+    if (old) {
+      const names = JSON.parse(old);
+      hoardData = {};
+      names.forEach(n => { hoardData[n] = { customValue: null, customDemand: null }; });
+      hoardedNames = new Set(names);
+    }
+  } catch { hoardedNames = new Set(); hoardData = {}; }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -168,14 +181,26 @@ function renderBrowser(items) {
 //  TRADE MANAGEMENT
 // ═══════════════════════════════════════════════════════════════════════════════
 function addItem(item, side) {
+  const isHoarded = hoardedNames.has(item.name);
+  const hEntry    = isHoarded ? (hoardData[item.name] || {}) : {};
+
+  // Use custom value/demand if the user has set them, otherwise fall back to market data
+  const cleanValue = (isHoarded && hEntry.customValue != null)
+    ? hEntry.customValue
+    : numVal(item.value);
+
+  const demand = (isHoarded && hEntry.customDemand)
+    ? hEntry.customDemand
+    : (item.demand || "");
+
   const entry = {
     uid:        crypto.randomUUID(),
     name:       item.name,
-    demand:     item.demand || "",
-    cleanValue: numVal(item.value),
+    demand,
+    cleanValue,
     dupedValue: numVal(item.duped_value),
     isDuped:    false,
-    isHoarded:  hoardedNames.has(item.name),
+    isHoarded,
   };
   (side === "offering" ? offeringItems : requestingItems).push(entry);
   renderTrade();
@@ -225,10 +250,15 @@ function renderTradeItem(item, box) {
     ? (item.dupedValue || item.cleanValue)
     : item.cleanValue;
 
+  // Check if custom overrides are active for this hoarded item
+  const hEntry       = item.isHoarded ? (hoardData[item.name] || {}) : {};
+  const hasCustomVal = item.isHoarded && hEntry.customValue != null;
+  const hasCustomDem = item.isHoarded && hEntry.customDemand;
+
   el.innerHTML = `
     <h4>${item.name}</h4>
-    <div class="item-value">${fmt(displayVal)}</div>
-    ${item.isHoarded ? '<span class="hoard-tag">🗄 Hoarded</span>' : ""}
+    <div class="item-value">${fmt(displayVal)}${hasCustomVal ? ' <span class="custom-val-tag">✎</span>' : ""}</div>
+    ${item.isHoarded ? `<span class="hoard-tag">🗄${hasCustomVal||hasCustomDem ? " Custom" : " Hoarded"}</span>` : ""}
     <div class="controls">
       <button class="clean ${!item.isDuped ? "active-btn" : ""}">Clean</button>
       <button class="duped ${item.isDuped  ? "active-btn" : ""}">Duped</button>
@@ -421,6 +451,17 @@ function demandClass(dk) {
 // ═══════════════════════════════════════════════════════════════════════════════
 //  CONTROLS
 // ═══════════════════════════════════════════════════════════════════════════════
+// ── How it works toggle ───────────────────────────────────────────────────────
+const hiwToggle = document.getElementById("hiwToggle");
+const hiwBody   = document.getElementById("hiwBody");
+const hiwArrow  = document.querySelector(".hiw-arrow");
+if (hiwToggle) {
+  hiwToggle.addEventListener("click", () => {
+    const open = hiwBody.classList.toggle("hiw-open");
+    hiwArrow.style.transform = open ? "rotate(180deg)" : "";
+  });
+}
+
 document.getElementById("swapBtn").onclick = () => {
   [offeringItems, requestingItems] = [requestingItems, offeringItems];
   renderTrade();
