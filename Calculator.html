@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trade Calculator | Jailbreak Exchange</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ValueList.html">Values</a></li>
+      <li><a href="DupeList.html">Dupe List</a></li>
+      <li><a href="Calculator.html" class="active">Trade Calculator</a></li>
+      <li><a href="AboutUs.html">About Us</a></li>
+    </ul>
+  </nav>
+
+  <main class="calculator-page">
+    <section class="calc-header">
+        <h1>Jailbreak Trade Calculator</h1>
+        <p>
+            Add items to both sides to compare values instantly.
+            Toggle clean or duped items to see accurate trade differences.
+        </p>
+    </section>
+
+    <div class="trade-balance-bar" id="tradeBalanceBar" aria-hidden="true">
+      <div class="trade-balance-track">
+        <div class="trade-balance-marker" id="tradeBalanceMarker"></div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="calc-actions">
+      <button id="swapBtn">⇄ Swap Sides</button>
+      <button id="clearBtn" class="danger">🗑 Clear</button>
+    </div>
+
+    <!-- TRADE SIDES -->
+    <div class="trade-container">
+
+      <div class="trade-side offering">
+        <h2>Offering</h2>
+        <div class="trade-items-wrapper" id="offeringWrapper">
+        <div class="trade-empty" data-side="offering">
+            <span class="plus">+</span>
+            <span class="text">No items added yet</span>
+        </div>
+        <div class="trade-items" id="offeringItems"></div>
+        </div>
+        <div class="trade-total" id="offeringTotal"></div>
+      </div>
+
+      <div class="trade-side requesting">
+        <h2>Requesting</h2>
+        <div class="trade-items-wrapper" id="requestingWrapper">
+        <div class="trade-empty" data-side="requesting">
+            <span class="plus">+</span>
+            <span class="text">No items added yet</span>
+        </div>
+        <div class="trade-items" id="requestingItems"></div>
+        </div>
+        <div class="trade-total" id="requestingTotal"></div>
+      </div>
+
+    </div>
+
+    <!-- DIFFERENCE -->
+    <div id="tradeDifference" class="trade-difference"></div>
+
+    <!-- ITEM BROWSER -->
+    <section class="values-container" id="itemBrowser">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search items..."
+        />
+
+        <div class="item-browser">
+            <div id="valuesGrid" class="values-grid"></div>
+        </div>
+
+    </section>
+
+  </main>
+
+  <script src="Calculator.js"></script>
+</body>
+</html>

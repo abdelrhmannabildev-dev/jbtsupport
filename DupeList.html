@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dupe Lookup | Jailbreak Exchange</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ValueList.html">Values</a></li>
+      <li><a href="DupeList.html" class="active">Dupe List</a></li>
+      <li><a href="Calculator.html">Trade Calculator</a></li>
+      <li><a href="AboutUs.html">About Us</a></li>
+    </ul>
+  </nav>
+
+  <main class="values-page">
+
+    <!-- HEADER -->
+    <section class="values-header">
+      <h1>Dupe Lookup</h1>
+      <p>
+        Search a Roblox username or user ID to view all known duped vehicles
+        linked to that account.
+      </p>
+
+      <div class="search-wrapper">
+        <input
+          type="text"
+          id="dupeSearch"
+          class="search-input"
+          placeholder="Search Roblox username or user ID…"
+        />
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="values-container">
+      <div id="dupeResults" class="values-grid"></div>
+    </section>
+
+  </main>
+
+  <script src="DupeList.js"></script>
+</body>
+</html>
