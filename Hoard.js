@@ -57,7 +57,13 @@ function removeFromHoard(name) {
 
 function updateCustomValue(name, val) {
   if (!hoardData[name]) return;
-  const n = Number(String(val).replace(/,/g, ""));
+  let str = String(val).replace(/,/g, "").toLowerCase();
+  let multiplier = 1;
+  if (str.endsWith('m')) {
+    multiplier = 1000000;
+    str = str.slice(0, -1);
+  }
+  const n = Number(str) * multiplier;
   hoardData[name].customValue = (val === "" || isNaN(n)) ? null : n;
   saveHoard();
 }
@@ -293,7 +299,13 @@ function demandBadgeClass(demand) {
 
 function numVal(v) {
   if (!v || String(v).toUpperCase() === "N/A") return 0;
-  return Number(String(v).replace(/,/g, "")) || 0;
+  let str = String(v).replace(/,/g, "").toLowerCase();
+  let multiplier = 1;
+  if (str.endsWith('m')) {
+    multiplier = 1000000;
+    str = str.slice(0, -1);
+  }
+  return Number(str) * multiplier || 0;
 }
 
 function fmt(v) {
