@@ -3,22 +3,21 @@ const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com/";
 const CSV_FILE = "items.csv";
 
 const CATEGORY_CONFIG = {
-  "Body Color":   "#a855f7",
-  "Drift":        "#f97316",
-  "Furniture":    "#a16207",
-  "Horns":        "#3b82f6",
-  "HyperChrome":  "#ec4899",
-  "Limited":      "#facc15",
-  "Rim":          "#8b5cf6",
-  "Seasonal":     "#22d3ee",
-  "Spoiler":      "#f59e0b",
-  "Texture":      "#94a3b8",
-  "Tire Sticker": "#06b6d4",
-  "Tire Style":   "#22c55e",
-  "Vehicle":      "#ef4444",
-  "Weapon Skin":  "#64748b"
+  "Body Color":   "#8b5cf6", // Purple shade for body parts – stands out on dark background
+  "Drift":        "#f97316", // Light orange – indicates drifting-related items
+  "Furniture":    "#a16207", // Darker orange/brown – for furniture items, subtle but visible
+  "Horns":        "#ef4444", // Blue – matches accent color for horns
+  "HyperChrome":  "#ec4899", // Pink – flashy/highlight item
+  "Limited":      "#facc15", // Yellow – emphasizes limited items
+  "Rim":          "#7c3aed", // Purple-blue – eye-catching for rims
+  "Seasonal":     "#22d3ee", // Light blue – seasonal items, cool tone
+  "Spoiler":      "#f59e0b", // Orange – subtle highlight for spoilers
+  "Texture":      "#94a3b8", // Light gray – textures, non-intrusive
+  "Tire Sticker": "#06b6d4", // Cyan-blue – stickers, cool and readable
+  "Tire Style":   "#818cf8", // Soft blue – style variations, harmonious with accent2
+  "Vehicle":      "#3b82f6", // Red – critical/vehicle items, clearly visible
+  "Weapon Skin":  "#64748b"  // Gray – weapon skins, muted for balance
 };
-
 // ─── State ────────────────────────────────────────────────────────────────────
 let allItems       = [];
 let filteredItems  = [];

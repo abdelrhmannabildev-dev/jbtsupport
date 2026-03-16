@@ -60,12 +60,11 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .hero-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .3s ease both}
 
 /* ── HOME STATS STRIP ── */
-.home-stats{display:flex;justify-content:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg-1);position:relative;z-index:1}
-.home-stat{flex:1;max-width:220px;padding:26px 20px;text-align:center;border-right:1px solid var(--border)}
-.home-stat:last-child{border-right:none}
+.home-stats{display:flex;gap: 16px;justify-content:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg);position:relative;z-index:1}
+.home-stat{flex:1;max-width:300px;padding:26px 20px;text-align:center;border-right:1px solid var(--border);background:var(--bg-2) ; border:1px solid transparent;border-radius: 8px;transition: all .2s;}
 .home-stat-num{font-family:var(--fm);font-size:26px;font-weight:600;color:var(--accent);line-height:1.1;margin-bottom:4px}
 .home-stat-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted)}
-
+  .home-stat:hover{color:var(--accent);border-top: 1px solid #38bdf8;border-bottom: 1px solid #818cf8; border-left: 1px solid #38bdf8; border-right: 1px solid #38bdf8; background:  rgba(56, 189, 248, 0.08)  ; transform: translateY(-2px); box-shadow:  0 2px 8px rgba(129,140,248,0.15);}
 /* ── HOME CONTENT ── */
 .home-content{padding:88px 48px;background:var(--bg);position:relative;z-index:1}
 .home-content h2{font-family:var(--fd);font-size:38px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f8fafc;margin-bottom:12px}

@@ -25,17 +25,19 @@ const DEMAND_CONFIG = {
   "medium":    { requestAdj:          0, upgradeMulti: 0.8  },
   "low":       { requestAdj: -1_000_000, upgradeMulti: 1.2  },
   "very low":  { requestAdj: -1_500_000, upgradeMulti: 1.5  },
+  "close to none": { requestAdj: -2_000_000, upgradeMulti: 1.7},
 };
 
 // Demand tier → numeric rank for comparison
 function demandRank(d) {
   const k = (d || "").toLowerCase().trim();
-  if (k === "very high") return 5;
-  if (k === "high")      return 4;
-  if (k === "decent")    return 3;
-  if (k === "medium")    return 2;
-  if (k === "low")       return 1;
-  if (k === "very low")  return 0;
+  if (k === "very high") return 6;
+  if (k === "high")      return 5;
+  if (k === "decent")    return 4;
+  if (k === "medium")    return 3;
+  if (k === "low")       return 2;
+  if (k === "very low")  return 1;
+  if (k === "close to none") return 0;
   return 3; // unknown → treat as decent
 }
 
@@ -445,12 +447,12 @@ function demandClass(dk) {
   if (dk === "medium")                     return "demand-medium";
   if (dk === "low")                        return "demand-low";
   if (dk === "very low")                   return "demand-verylow";
-  return "demand-low";
+  if (dk === "close to none")              return "demand-closetonone";
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  CONTROLS
-// ═══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════
 // ── How it works toggle ───────────────────────────────────────────────────────
 const hiwToggle = document.getElementById("hiwToggle");
 const hiwBody   = document.getElementById("hiwBody");
