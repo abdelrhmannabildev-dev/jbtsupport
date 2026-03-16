@@ -10,6 +10,7 @@
 
   <nav class="navbar">
     <div class="logo"><a href="index.html">Jailbreak Exchange</a></div>
+    <div class="menu-toggle">☰</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="ValueList.html">Values</a></li>
@@ -114,5 +115,13 @@
     </div>
   </footer>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.querySelector('.menu-toggle');
+      const nav = document.querySelector('.nav-links');
+      if (!toggle || !nav) return;
+      toggle.addEventListener('click', () => nav.classList.toggle('active'));
+    });
+  </script>
 </body>
 </html>
