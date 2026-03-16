@@ -151,7 +151,7 @@ function renderHoardList() {
             />
           </div>
           <select class="hoard-custom-select hoard-dem-select" data-name="${name}">
-            <option value="">Market (${mktDem})</option>
+            <option value="" Style="background:${color};">Market (${mktDem})</option>
             ${DEMAND_OPTIONS.map(d => `<option value="${d}" ${entry.customDemand === d ? "selected" : ""}>${d}</option>`).join("")}
           </select>
         </div>

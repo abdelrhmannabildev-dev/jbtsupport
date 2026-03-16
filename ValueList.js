@@ -3,20 +3,20 @@ const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com/";
 const CSV_FILE = "items.csv";
 
 const CATEGORY_CONFIG = {
-  "Body Color":   "#8b5cf6", // Purple shade for body parts – stands out on dark background
-  "Drift":        "#f97316", // Light orange – indicates drifting-related items
-  "Furniture":    "#a16207", // Darker orange/brown – for furniture items, subtle but visible
-  "Horns":        "#ef4444", // Blue – matches accent color for horns
-  "HyperChrome":  "#ec4899", // Pink – flashy/highlight item
-  "Limited":      "#facc15", // Yellow – emphasizes limited items
-  "Rim":          "#7c3aed", // Purple-blue – eye-catching for rims
-  "Seasonal":     "#22d3ee", // Light blue – seasonal items, cool tone
+  "Body Color":   "#8b5cf6", // Purple – bright, stands out on dark backgrounds
+  "Drift":        "#16f9c0", // Orange – highlights drifting-related items
+  "Furniture":    "#b95310", // Neon green – visible and futuristic on dark UI
+  "Horns":        "#925d5d", // Blue neon – matches horn accents
+  "HyperChrome":  "#bb48ec", // Pink neon – flashy/highlighted items
+  "Limited":      "#facc15", // Yellow neon – emphasizes rare/limited items
+  "Rim":          "#2158a3", // Purple-blue neon – eye-catching for rims
+  "Seasonal":     "#22d3ee", // Light cyan – seasonal items, cool neon tone
   "Spoiler":      "#f59e0b", // Orange – subtle highlight for spoilers
-  "Texture":      "#94a3b8", // Light gray – textures, non-intrusive
-  "Tire Sticker": "#06b6d4", // Cyan-blue – stickers, cool and readable
-  "Tire Style":   "#818cf8", // Soft blue – style variations, harmonious with accent2
-  "Vehicle":      "#3b82f6", // Red – critical/vehicle items, clearly visible
-  "Weapon Skin":  "#64748b"  // Gray – weapon skins, muted for balance
+  "Texture":      "#94a3b8", // Light gray – textures, readable but muted
+  "Tire Sticker": "#06b6d4", // Cyan-blue – sticker elements, clear visibility
+  "Tire Style":   "#6366f1", // Neon blue – style variations, harmonizes with accents
+  "Vehicle":      "#3b82f6", // Red neon – critical vehicle items, highly visible
+  "Weapon Skin":  "#536783"  // Gray-blue – muted, balanced for weapon skins
 };
 // ─── State ────────────────────────────────────────────────────────────────────
 let allItems       = [];
@@ -24,6 +24,7 @@ let filteredItems  = [];
 let activeCategory = "All";
 let searchQuery    = "";
 let currentPage    = 1;
+let numberFormat   = "full";
 const ITEMS_PER_PAGE = 20;
 
 const mainEl = document.querySelector("main.values-page");
@@ -83,7 +84,7 @@ function toSlug(name) {
 //  LIST VIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 function showList() {
-  document.title = "Item Values | Jailbreak Exchange";
+  document.title = "Values | Jailbreak Exchange";
 
   mainEl.innerHTML = `
     <div id="categoryFilters" class="category-filters"></div>
@@ -102,7 +103,20 @@ function showList() {
   const gridEl    = document.getElementById("valuesGrid");
   const filtersEl = document.getElementById("categoryFilters");
   const searchEl  = document.getElementById("searchInput");
-
+  const formatSelectorHtml = `
+    <div class="format-wrapper" style="margin-top:10px;">
+      <label for="formatSelect">Number Format:</label>
+      <select id="formatSelect">
+      <option value="full">Full Format (e.g., 1000)</option>
+      <option value="short">Short Format (e.g., 1M/1k)</option>
+      </select>
+    </div>
+  `;
+  document.querySelector(".values-header").insertAdjacentHTML("beforeend", formatSelectorHtml);
+  const formatSelect = document.getElementById("formatSelect");
+  formatSelect.addEventListener("change", e => {
+  numberFormat = e.target.value;   // 'full' أو 'short'
+  renderPage(gridEl);});
   filtersEl.innerHTML = `<button class="filter-btn active" data-cat="All">All</button>`;
   const cats = [...new Set(allItems.map(i => i.category).filter(Boolean))];
   cats.forEach(cat => {
@@ -178,7 +192,7 @@ function renderCards(items, gridEl) {
     gridEl.innerHTML = "<p style='color:#64748b;text-align:center;padding:40px;grid-column:1/-1'>No items found.</p>";
     return;
   }
-  items.forEach(item => {
+  items.forEach((item, idx) => {
     const color = CATEGORY_CONFIG[item.category] || "#64748b";
     const card  = document.createElement("div");
     card.className = "value-card clickable-card";
@@ -188,11 +202,11 @@ function renderCards(items, gridEl) {
       <span class="category-badge" style="background:${color}20;color:${color}">${item.category}</span>
       <div class="value-row">
         <span>Cash Value</span>
-        <strong>${fmt(item.value)}</strong>
+        <strong>${formatvalue(item.value)}</strong>
       </div>
       <div class="value-row">
         <span>Duped Value</span>
-        <strong>${fmt(item.duped_value)}</strong>
+        <strong>${formatvalue(item.duped_value)}</strong>
       </div>
       <div class="value-row" style="align-items:center">
         <span>Demand</span>
@@ -208,6 +222,7 @@ function renderCards(items, gridEl) {
       scrollTo({top:0,behavior:"smooth"});
     });
     gridEl.appendChild(card);
+    setTimeout(() => card.classList.add("show"), idx * 35);
   });
 }
 
@@ -256,12 +271,12 @@ function showDetail(item) {
             <div class="detail-stats-grid">
               <div class="detail-stat-card">
                 <div class="stat-label">Cash Value</div>
-                <div class="stat-value" style="color:${color}">${fmt(item.value)}</div>
+                <div class="stat-value" style="color:${color}">${formatvalue(item.value)}</div>
                 <div class="stat-sub">Clean condition</div>
               </div>
               <div class="detail-stat-card ${!hasDuped ? "stat-na" : ""}">
                 <div class="stat-label">Duped Value</div>
-                <div class="stat-value">${hasDuped ? fmt(item.duped_value) : "N/A"}</div>
+                <div class="stat-value">${hasDuped ? formatvalue(item.duped_value) : "N/A"}</div>
                 <div class="stat-sub">${hasDuped ? "Duped condition" : "Not applicable"}</div>
               </div>
               ${hasDuped ? '<div class="detail-stat-card"><div class="stat-label">Value Loss</div><div class="stat-value stat-loss-val">-' + lossPct + '%</div><div class="stat-sub">When duped</div></div>' : ""}
@@ -276,9 +291,9 @@ function showDetail(item) {
                 <div class="bar-track">
                   <div class="bar-fill" data-w="${cleanPct}" style="background:${color};width:0%"></div>
                 </div>
-                <span class="bar-amount">${fmt(item.value)}</span>
+                <span class="bar-amount">${formatvalue(item.value)}</span>
               </div>
-              ${hasDuped ? '<div class="bar-row"><span class="bar-label">Duped</span><div class="bar-track"><div class="bar-fill duped-fill" data-w="' + dupedPct + '" style="width:0%"></div></div><span class="bar-amount bar-muted">' + fmt(item.duped_value) + '</span></div>' : ""}
+              ${hasDuped ? '<div class="bar-row"><span class="bar-label">Duped</span><div class="bar-track"><div class="bar-fill duped-fill" data-w="' + dupedPct + '" style="width:0%"></div></div><span class="bar-amount bar-muted">' + formatvalue(item.duped_value) + '</span></div>' : ""}
             </div>
           </div>
 
@@ -290,8 +305,8 @@ function showDetail(item) {
         <div class="detail-table">
           ${detailRow("Name",         item.name)}
           ${detailRow("Category",     item.category, color)}
-          ${detailRow("Cash Value",   fmt(item.value))}
-          ${detailRow("Duped Value",  fmt(item.duped_value))}
+          ${detailRow("Cash Value",   formatvalue(item.value))}
+          ${detailRow("Duped Value",  formatvalue(item.duped_value))}
           ${detailRow("Demand",       item.demand || "—")}
           ${item.rarity       ? detailRow("Rarity",       item.rarity)       : ""}
           ${item.last_updated ? detailRow("Last Updated", item.last_updated) : ""}
@@ -304,7 +319,7 @@ function showDetail(item) {
         <div class="similar-grid">
           ${similar.map(s => {
             const sc = CATEGORY_CONFIG[s.category] || "#64748b";
-            return '<div class="similar-card" data-slug="' + toSlug(s.name) + '" style="border-color:' + sc + '44"><div class="similar-name">' + s.name + '</div><div class="similar-val" style="color:' + sc + '">' + fmt(s.value) + '</div>' + demandBadge(s.demand) + '</div>';
+            return '<div class="similar-card" data-slug="' + toSlug(s.name) + '" style="border-color:' + sc + '44"><div class="similar-name">' + s.name + '</div><div class="similar-val" style="color:' + sc + '">' + formatvalue(s.value) + '</div>' + demandBadge(s.demand) + '</div>';
           }).join("")}
         </div>
       </div>` : ""}
@@ -361,11 +376,7 @@ function numVal(v) {
   return Number(String(v).replace(/,/g, "")) || 0;
 }
 
-function fmt(v) {
-  if (v === null || v === undefined || v === "" || String(v).toUpperCase() === "N/A") return "N/A";
-  const n = Number(String(v).replace(/,/g, ""));
-  return isNaN(n) ? "N/A" : n.toLocaleString("en-US");
-}
+
 
 function demandBadge(demand) {
   if (!demand || !demand.trim() || demand === "—") return '<span class="demand-badge d-unknown">Unknown</span>';
@@ -381,6 +392,18 @@ function demandBadge(demand) {
   return '<span class="demand-badge ' + cls + '">' + demand + '</span>';
 }
 
+function formatvalue(value) {
+  if (value === null || value === undefined) return "N/A";
+  const num = Number(String(value).replace(/,/g, ""));
+  if (isNaN(num)) return "N/A";
+
+  if (numberFormat === "short") {
+    if (num >= 1_000_000) return (num / 1_000_000).toLocaleString("en", { maximumFractionDigits: 1 }) + "M";
+    if (num >= 1_000) return (num / 1_000).toLocaleString("en", { maximumFractionDigits: 2 }) + "K";
+  }
+
+  return num.toLocaleString("en");
+}
 // ─── CSV parser ───────────────────────────────────────────────────────────────
 function parseCSVLine(line) {
   const result = [];
