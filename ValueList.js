@@ -1,6 +1,7 @@
 // ─── Config ───────────────────────────────────────────────────────────────────
 const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com/";
 const CSV_FILE = "items.csv";
+const CSV_URL  = new URL(CSV_FILE, window.location.href).toString();
 
 const CATEGORY_CONFIG = {
   "Body Color":   "#8b5cf6", // Purple – bright, stands out on dark backgrounds
@@ -46,7 +47,7 @@ fetch(API_URL)
   });
 
 function loadCSV() {
-  fetch(CSV_FILE)
+  fetch(CSV_URL, { cache: "no-store" })
     .then(res => { if (!res.ok) throw new Error("CSV not found"); return res.text(); })
     .then(text => {
       allItems = parseCSV(text);
@@ -55,7 +56,10 @@ function loadCSV() {
     })
     .catch(err => {
       console.error("Both sources failed:", err.message);
-      mainEl.innerHTML = "<p style='color:#64748b;text-align:center;padding:80px'>Failed to load items.</p>";
+      const fileNote = location.protocol === "file:" 
+        ? "<br><br><span style='font-size:14px;color:#94a3b8'>Local file access is blocked by the browser. Run a local server (example: <code>python -m http.server</code>) and open <code>http://localhost:8000/ValueList.html</code>.</span>"
+        : "";
+      mainEl.innerHTML = "<p style='color:#64748b;text-align:center;padding:80px'>Failed to load items." + fileNote + "</p>";
     });
 }
 
@@ -201,14 +205,22 @@ function renderPage(gridEl) {
 }
 
 function renderPagination(gridEl) {
-  let pg = document.getElementById("pagination");
-  if (!pg) {
-    pg = document.createElement("div");
-    pg.id = "pagination";
-    pg.className = "pagination";
-    gridEl.after(pg);
+  let pgTop = document.getElementById("pagination-top");
+  let pgBottom = document.getElementById("pagination-bottom");
+  if (!pgTop) {
+    pgTop = document.createElement("div");
+    pgTop.id = "pagination-top";
+    pgTop.className = "pagination pagination-top";
+    gridEl.before(pgTop);
   }
-  pg.innerHTML = "";
+  if (!pgBottom) {
+    pgBottom = document.createElement("div");
+    pgBottom.id = "pagination-bottom";
+    pgBottom.className = "pagination pagination-bottom";
+    gridEl.after(pgBottom);
+  }
+  pgTop.innerHTML = "";
+  pgBottom.innerHTML = "";
   const total = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
   if (total <= 1) return;
 
@@ -220,12 +232,46 @@ function renderPagination(gridEl) {
   const info = document.createElement("span");
   info.textContent = `Page ${currentPage} of ${total}`;
 
+  const jump = document.createElement("input");
+  jump.type = "number";
+  jump.min = "1";
+  jump.max = String(total);
+  jump.value = String(currentPage);
+  jump.className = "pagination-jump";
+  jump.title = "Go to page";
+  jump.addEventListener("change", () => {
+    let n = parseInt(jump.value, 10);
+    if (isNaN(n)) n = currentPage;
+    n = Math.min(Math.max(1, n), total);
+    currentPage = n;
+    renderPage(gridEl);
+    renderPagination(gridEl);
+    scrollTo({top:0,behavior:"smooth"});
+  });
+
   const next = document.createElement("button");
   next.textContent = "Next →";
   next.disabled = currentPage === total;
   next.onclick = () => { currentPage++; renderPage(gridEl); renderPagination(gridEl); scrollTo({top:0,behavior:"smooth"}); };
 
-  pg.append(prev, info, next);
+  const prev2 = prev.cloneNode(true);
+  const next2 = next.cloneNode(true);
+  prev2.onclick = prev.onclick;
+  next2.onclick = next.onclick;
+  const info2 = info.cloneNode(true);
+  const jump2 = jump.cloneNode(true);
+  jump2.addEventListener("change", () => {
+    let n = parseInt(jump2.value, 10);
+    if (isNaN(n)) n = currentPage;
+    n = Math.min(Math.max(1, n), total);
+    currentPage = n;
+    renderPage(gridEl);
+    renderPagination(gridEl);
+    scrollTo({top:0,behavior:"smooth"});
+  });
+
+  pgTop.append(prev, info, jump, next);
+  pgBottom.append(prev2, info2, jump2, next2);
 }
 
 function renderCards(items, gridEl) {

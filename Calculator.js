@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com/";
 const CSV_FILE = "items.csv";
+const CSV_URL  = new URL(CSV_FILE, window.location.href).toString();
 
 const CATEGORY_CONFIG = {
   "Body Color":   "#a855f7", "Drift":        "#f97316",
@@ -96,6 +97,9 @@ let offeringItems   = [];
 let requestingItems = [];
 let hoardedNames = new Set(); // item name → quick lookup
 let hoardData    = {};        // item name → { customValue, customDemand }
+let numberFormat = "full";
+let sortKey = "default";
+let searchQuery = "";
 
 // ─── Load hoard (v2: custom value+demand per item) ────────────────────────────
 function loadHoard() {
@@ -127,14 +131,14 @@ fetch(API_URL)
   .then(data => {
     allItems = Array.isArray(data) ? data : (data.values || []);
     if (!allItems.length) throw new Error();
-    renderBrowser(allItems);
+    updateBrowser();
   })
   .catch(() => loadCSV());
 
 function loadCSV() {
-  fetch(CSV_FILE)
+  fetch(CSV_URL, { cache: "no-store" })
     .then(r => { if (!r.ok) throw new Error(); return r.text(); })
-    .then(text => { allItems = parseCSV(text); renderBrowser(allItems); })
+    .then(text => { allItems = parseCSV(text); updateBrowser(); })
     .catch(() => {
       document.getElementById("valuesGrid").innerHTML =
         "<p style='color:#64748b;padding:40px;text-align:center'>Failed to load items.</p>";
@@ -146,11 +150,65 @@ function loadCSV() {
 // ═══════════════════════════════════════════════════════════════════════════════
 const grid        = document.getElementById("valuesGrid");
 const searchInput = document.getElementById("searchInput");
+const controlsHtml = `
+    <div class="list-controls">
+      <div class="format-wrapper" title="Choose how numbers are displayed">
+        <label for="formatSelect">Number Format:</label>
+        <select id="formatSelect">
+          <option value="full">Full (e.g., 1,000,000)</option>
+          <option value="short">Short (e.g., 1M / 1K)</option>
+        </select>
+      </div>
+      <div class="format-wrapper" title="Sort items">
+        <label for="sortSelect">Sort By:</label>
+        <select id="sortSelect">
+          <option value="default">Default</option>
+          <option value="value-desc">Value: High → Low</option>
+          <option value="value-asc">Value: Low → High</option>
+          <option value="demand-desc">Demand: High → Low</option>
+          <option value="demand-asc">Demand: Low → High</option>
+          <option value="name-asc">Name A → Z</option>
+          <option value="name-desc">Name Z → A</option>
+        </select>
+      </div>
+    </div>
+  `;
+if (searchInput) {
+  searchInput.insertAdjacentHTML("afterend", controlsHtml);
+  const formatSelect = document.getElementById("formatSelect");
+  const sortSelect = document.getElementById("sortSelect");
 
-searchInput.addEventListener("input", e => {
-  const q = e.target.value.toLowerCase();
-  renderBrowser(allItems.filter(i => i.name && i.name.toLowerCase().includes(q)));
-});
+  if (formatSelect) {
+    formatSelect.value = numberFormat;
+    formatSelect.addEventListener("change", e => {
+      numberFormat = e.target.value;
+      updateBrowser();
+      renderTrade();
+    });
+  }
+
+  if (sortSelect) {
+    sortSelect.value = sortKey;
+    sortSelect.addEventListener("change", e => {
+      sortKey = e.target.value;
+      updateBrowser();
+    });
+  }
+
+  searchInput.addEventListener("input", e => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    updateBrowser();
+  });
+}
+
+function updateBrowser() {
+  let items = allItems;
+  if (searchQuery) {
+    items = items.filter(i => i.name && i.name.toLowerCase().includes(searchQuery));
+  }
+  items = applySort(items);
+  renderBrowser(items);
+}
 
 function renderBrowser(items) {
   grid.innerHTML = "";
@@ -529,5 +587,29 @@ function numVal(v) {
 function fmt(v) {
   if (v === null || v === undefined || v === "") return "N/A";
   const n = Number(String(v).replace(/,/g, ""));
-  return isNaN(n) ? "N/A" : n.toLocaleString("en-US");
+  if (isNaN(n)) return "N/A";
+  if (numberFormat === "short") {
+    if (n >= 1_000_000) return (n / 1_000_000).toLocaleString("en", { maximumFractionDigits: 1 }) + "M";
+    if (n >= 1_000) return (n / 1_000).toLocaleString("en", { maximumFractionDigits: 2 }) + "K";
+  }
+  return n.toLocaleString("en-US");
+}
+
+function applySort(items) {
+  const out = [...items];
+  const DEMAND_ORDER = { "very high": 5, "high": 4, "decent": 3, "medium": 2, "low": 1, "very low": 0 };
+  if (sortKey === "name-asc") {
+    out.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortKey === "name-desc") {
+    out.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (sortKey === "value-desc" || sortKey === "default") {
+    out.sort((a, b) => numVal(b.value) - numVal(a.value));
+  } else if (sortKey === "value-asc") {
+    out.sort((a, b) => numVal(a.value) - numVal(b.value));
+  } else if (sortKey === "demand-desc") {
+    out.sort((a, b) => (DEMAND_ORDER[(b.demand||"").toLowerCase()] ?? -1) - (DEMAND_ORDER[(a.demand||"").toLowerCase()] ?? -1));
+  } else if (sortKey === "demand-asc") {
+    out.sort((a, b) => (DEMAND_ORDER[(a.demand||"").toLowerCase()] ?? -1) - (DEMAND_ORDER[(b.demand||"").toLowerCase()] ?? -1));
+  }
+  return out;
 }

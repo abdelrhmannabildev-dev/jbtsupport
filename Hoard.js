@@ -4,8 +4,9 @@
 //  Format: { "ItemName": { customValue: number|null, customDemand: string|null } }
 //  Backward compat: migrates old "jbe_hoard" (array) on first load
 // ═══════════════════════════════════════════════════════════════════════════════
-const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com/";
+const API_URL  = "https://reveal-hall-drugs-commission.trycloudflare.com";
 const CSV_FILE = "items.csv";
+const CSV_URL  = new URL(CSV_FILE, window.location.href).toString();
 
 const CATEGORY_CONFIG = {
   "Body Color":"#a855f7","Drift":"#f97316","Furniture":"#a16207","Horns":"#3b82f6",
@@ -18,6 +19,12 @@ const DEMAND_OPTIONS = ["Very High","High","Decent","Medium","Low","Very Low"];
 
 let allItems  = [];
 let hoardData = {}; // { name: { customValue, customDemand } }
+let numberFormat = "full";
+let sortKey = "default";
+let searchQuery = "";
+let searchInputEl;
+let searchSectionEl;
+let searchResultsEl;
 
 // ── Storage ───────────────────────────────────────────────────────────────────
 function loadHoard() {
@@ -78,13 +85,85 @@ function updateCustomDemand(name, demand) {
 loadHoard();
 
 fetch(API_URL)
-  .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-  .then(d => { allItems = Array.isArray(d) ? d : (d.values || []); if (!allItems.length) throw new Error(); init(); })
-  .catch(() => fetch(CSV_FILE).then(r=>r.text()).then(t=>{allItems=parseCSV(t);init();})
-    .catch(()=>{ document.getElementById("hoardMain").innerHTML += "<p style='color:#64748b;text-align:center;padding:40px'>Failed to load items.</p>"; })
-  );
+  .then(r => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  })
+  .then(d => {
+    allItems = Array.isArray(d) ? d : (d.values || []);
+    if (!allItems.length) throw new Error();
+    init();
+  })
+  .catch(() =>
+    fetch(CSV_URL, { cache: "no-store" })
+      .then(r => {
+        if (!r.ok) throw new Error("CSV not found");
+        return r.text();
+      })
+      .then(t => {
+        allItems = parseCSV(t);
+        if (!allItems.length) throw new Error("CSV empty");
+        console.log("Loaded items:", allItems.length);
+        init();
+      })
+  )
+  .catch(() => {
+    const fileNote = location.protocol === "file:"
+      ? "<br><br><span style='font-size:14px;color:#94a3b8'>Local file access is blocked by the browser. Run a local server (example: <code>python -m http.server</code>) and open <code>http://localhost:8000/Hoard.html</code>.</span>"
+      : "";
+    document.getElementById("hoardMain").innerHTML +=
+      "<p style='color:#64748b;text-align:center;padding:40px'>Failed to load items." + fileNote + "</p>";
+  });
 
-function init() { renderHoardList(); renderStats(); setupSearch(); }
+function init() { renderHoardList(); renderStats(); setupControls(); setupSearch(); }
+
+function setupControls() {
+  const header = document.querySelector(".values-header");
+  if (!header || document.getElementById("sortSelect")) return;
+
+  const controlsHtml = `
+    <div class="list-controls">
+      <div class="format-wrapper" title="Choose how numbers are displayed">
+        <label for="formatSelect">Number Format:</label>
+        <select id="formatSelect">
+          <option value="full">Full (e.g., 1,000,000)</option>
+          <option value="short">Short (e.g., 1M / 1K)</option>
+        </select>
+      </div>
+      <div class="format-wrapper" title="Sort items">
+        <label for="sortSelect">Sort By:</label>
+        <select id="sortSelect">
+          <option value="default">Default</option>
+          <option value="value-desc">Value: High â†’ Low</option>
+          <option value="value-asc">Value: Low â†’ High</option>
+          <option value="demand-desc">Demand: High â†’ Low</option>
+          <option value="demand-asc">Demand: Low â†’ High</option>
+          <option value="name-asc">Name A â†’ Z</option>
+          <option value="name-desc">Name Z â†’ A</option>
+        </select>
+      </div>
+    </div>
+  `;
+  header.insertAdjacentHTML("beforeend", controlsHtml);
+
+  const formatSelect = document.getElementById("formatSelect");
+  formatSelect.value = numberFormat;
+  formatSelect.addEventListener("change", e => {
+    numberFormat = e.target.value;
+    renderHoardList();
+    renderStats();
+    renderSearchResults();
+  });
+
+  const sortSelect = document.getElementById("sortSelect");
+  sortSelect.value = sortKey;
+  sortSelect.addEventListener("change", e => {
+    sortKey = e.target.value;
+    renderHoardList();
+    renderStats();
+    renderSearchResults();
+  });
+}
 
 // ── Hoard list ────────────────────────────────────────────────────────────────
 function renderHoardList() {
@@ -106,12 +185,19 @@ function renderHoardList() {
   titleEl.style.display = "block";
   listEl.innerHTML = "";
 
-  names.forEach(name => {
+  const itemsForSort = names.map(name => {
+    const item = allItems.find(i => i.name === name);
+    return item || { name, value: 0, demand: "", category: "" };
+  });
+  const sortedItems = applySort(itemsForSort);
+
+  sortedItems.forEach(item => {
+    const name    = item.name;
     const entry   = hoardData[name];
-    const item    = allItems.find(i => i.name === name);
-    const color   = item ? (CATEGORY_CONFIG[item.category] || "#64748b") : "#64748b";
-    const mktVal  = item ? numVal(item.value) : 0;
-    const mktDem  = item ? (item.demand || "Unknown") : "Unknown";
+    const full    = allItems.find(i => i.name === name) || item;
+    const color   = full ? (CATEGORY_CONFIG[full.category] || "#64748b") : "#64748b";
+    const mktVal  = full ? numVal(full.value) : 0;
+    const mktDem  = full ? (full.demand || "Unknown") : "Unknown";
 
     const card = document.createElement("div");
     card.className = "hoard-card";
@@ -121,7 +207,7 @@ function renderHoardList() {
       <div class="hoard-card-top">
         <div>
           <div class="hoard-card-name">${name}</div>
-          ${item ? `<span class="category-badge" style="background:${color}20;color:${color}">${item.category}</span>` : ""}
+          ${full ? `<span class="category-badge" style="background:${color}20;color:${color}">${full.category}</span>` : ""}
         </div>
         <button class="hoard-remove-btn" title="Remove from hoard">✕</button>
       </div>
@@ -236,48 +322,56 @@ function renderStats() {
 
 // ── Search ────────────────────────────────────────────────────────────────────
 function setupSearch() {
-  const input   = document.getElementById("hoardSearch");
-  const section = document.getElementById("searchResultsSection");
-  const results = document.getElementById("hoardSearchResults");
+  searchInputEl = document.getElementById("hoardSearch");
+  searchSectionEl = document.getElementById("searchResultsSection");
+  searchResultsEl = document.getElementById("hoardSearchResults");
+  if (!searchInputEl) return;
 
-  input.addEventListener("input", e => {
-    const q = e.target.value.toLowerCase().trim();
-    if (!q) { section.style.display = "none"; return; }
+  searchInputEl.addEventListener("input", e => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    renderSearchResults();
+  });
+}
 
-    const matches = allItems.filter(i => i.name.toLowerCase().includes(q)).slice(0, 30);
-    section.style.display = "block";
-    results.innerHTML = "";
+function renderSearchResults() {
+  if (!searchSectionEl || !searchResultsEl) return;
+  if (!searchQuery) { searchSectionEl.style.display = "none"; return; }
 
-    if (!matches.length) {
-      results.innerHTML = "<p style='color:#64748b;padding:20px;grid-column:1/-1'>No items found.</p>";
-      return;
-    }
+  let matches = allItems.filter(i => i.name.toLowerCase().includes(searchQuery));
+  matches = applySort(matches).slice(0, 30);
 
-    matches.forEach(item => {
-      const isHoarded = !!hoardData[item.name];
-      const color     = CATEGORY_CONFIG[item.category] || "#64748b";
-      const card      = document.createElement("div");
-      card.className  = "value-card";
-      card.style.borderColor = color;
+  searchSectionEl.style.display = "block";
+  searchResultsEl.innerHTML = "";
 
-      card.innerHTML = `
-        <h3>${item.name}</h3>
-        <span class="category-badge" style="background:${color}20;color:${color}">${item.category}</span>
-        <div class="value-row"><span>Value</span><strong>${fmt(item.value)}</strong></div>
-        <div class="value-row" style="align-items:center"><span>Demand</span>${demandBadge(item.demand)}</div>
-        <button class="hoard-toggle-btn ${isHoarded ? "hoard-active" : ""}" data-name="${item.name}">
-          ${isHoarded ? "✓ Hoarding" : "+ Add to Hoard"}
-        </button>
-      `;
+  if (!matches.length) {
+    searchResultsEl.innerHTML = "<p style='color:#64748b;padding:20px;grid-column:1/-1'>No items found.</p>";
+    return;
+  }
 
-      card.querySelector(".hoard-toggle-btn").addEventListener("click", () => {
-        if (hoardData[item.name]) { removeFromHoard(item.name); }
-        else                      { addToHoard(item.name); }
-        input.dispatchEvent(new Event("input"));
-      });
+  matches.forEach(item => {
+    const isHoarded = !!hoardData[item.name];
+    const color     = CATEGORY_CONFIG[item.category] || "#64748b";
+    const card      = document.createElement("div");
+    card.className  = "value-card show";
+    card.style.borderColor = color;
 
-      results.appendChild(card);
+    card.innerHTML = `
+      <h3>${item.name}</h3>
+      <span class="category-badge" style="background:${color}20;color:${color}">${item.category}</span>
+      <div class="value-row"><span>Value</span><strong>${fmt(item.value)}</strong></div>
+      <div class="value-row" style="align-items:center"><span>Demand</span>${demandBadge(item.demand)}</div>
+      <button class="hoard-toggle-btn ${isHoarded ? "hoard-active" : ""}" data-name="${item.name}">
+        ${isHoarded ? "âœ“ Hoarding" : "+ Add to Hoard"}
+      </button>
+    `;
+
+    card.querySelector(".hoard-toggle-btn").addEventListener("click", () => {
+      if (hoardData[item.name]) { removeFromHoard(item.name); }
+      else                      { addToHoard(item.name); }
+      searchInputEl.dispatchEvent(new Event("input"));
     });
+
+    searchResultsEl.appendChild(card);
   });
 }
 
@@ -311,7 +405,31 @@ function numVal(v) {
 function fmt(v) {
   if (v === null || v === undefined || v === "") return "N/A";
   const n = Number(String(v).replace(/,/g, ""));
-  return isNaN(n) ? "N/A" : n.toLocaleString("en-US");
+  if (isNaN(n)) return "N/A";
+  if (numberFormat === "short") {
+    if (n >= 1_000_000) return (n / 1_000_000).toLocaleString("en", { maximumFractionDigits: 1 }) + "M";
+    if (n >= 1_000) return (n / 1_000).toLocaleString("en", { maximumFractionDigits: 2 }) + "K";
+  }
+  return n.toLocaleString("en-US");
+}
+
+function applySort(items) {
+  const out = [...items];
+  const DEMAND_ORDER = { "very high": 5, "high": 4, "decent": 3, "medium": 2, "low": 1, "very low": 0 };
+  if (sortKey === "name-asc") {
+    out.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortKey === "name-desc") {
+    out.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (sortKey === "value-desc" || sortKey === "default") {
+    out.sort((a, b) => numVal(b.value) - numVal(a.value));
+  } else if (sortKey === "value-asc") {
+    out.sort((a, b) => numVal(a.value) - numVal(b.value));
+  } else if (sortKey === "demand-desc") {
+    out.sort((a, b) => (DEMAND_ORDER[(b.demand||"").toLowerCase()] ?? -1) - (DEMAND_ORDER[(a.demand||"").toLowerCase()] ?? -1));
+  } else if (sortKey === "demand-asc") {
+    out.sort((a, b) => (DEMAND_ORDER[(a.demand||"").toLowerCase()] ?? -1) - (DEMAND_ORDER[(b.demand||"").toLowerCase()] ?? -1));
+  }
+  return out;
 }
 
 // ── CSV parser ────────────────────────────────────────────────────────────────
