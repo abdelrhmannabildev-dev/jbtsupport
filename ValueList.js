@@ -25,6 +25,7 @@ let activeCategory = "All";
 let searchQuery    = "";
 let currentPage    = 1;
 let numberFormat   = "full";
+let sortKey        = "default";
 const ITEMS_PER_PAGE = 20;
 
 const mainEl = document.querySelector("main.values-page");
@@ -99,27 +100,52 @@ function showList() {
       <div id="valuesGrid" class="values-grid"></div>
     </section>
   `;
-
+  
   const gridEl    = document.getElementById("valuesGrid");
   const filtersEl = document.getElementById("categoryFilters");
   const searchEl  = document.getElementById("searchInput");
-  const formatSelectorHtml = `
-    <div class="format-wrapper" style="margin-top:10px;">
-      <label for="formatSelect">Number Format:</label>
-      <select id="formatSelect">
-      <option value="full">Full Format (e.g., 1000)</option>
-      <option value="short">Short Format (e.g., 1M/1k)</option>
-      </select>
+  const controlsHtml = `
+    <div class="list-controls">
+      <div class="format-wrapper" title="Choose how numbers are displayed">
+        <label for="formatSelect">Number Format:</label>
+        <select id="formatSelect">
+          <option value="full">Full (e.g., 1,000,000)</option>
+          <option value="short">Short (e.g., 1M / 1K)</option>
+        </select>
+      </div>
+      <div class="format-wrapper" title="Sort items">
+        <label for="sortSelect">Sort By:</label>
+        <select id="sortSelect">
+          <option value="default">Default</option>
+          <option value="value-desc">Value: High → Low</option>
+          <option value="value-asc">Value: Low → High</option>
+          <option value="demand-desc">Demand: High → Low</option>
+          <option value="demand-asc">Demand: Low → High</option>
+          <option value="name-asc">Name A → Z</option>
+          <option value="name-desc">Name Z → A</option>
+        </select>
+      </div>
     </div>
   `;
-  document.querySelector(".values-header").insertAdjacentHTML("beforeend", formatSelectorHtml);
+  document.querySelector(".values-header").insertAdjacentHTML("beforeend", controlsHtml);
+
   const formatSelect = document.getElementById("formatSelect");
   formatSelect.addEventListener("change", e => {
-  numberFormat = e.target.value;   // 'full' أو 'short'
-  renderPage(gridEl);});
+    numberFormat = e.target.value;
+    renderPage(gridEl);
+  });
+
+  const sortSelect = document.getElementById("sortSelect");
+  sortSelect.value = sortKey;
+  sortSelect.addEventListener("change", e => {
+    sortKey = e.target.value;
+    currentPage = 1;
+    applyFilters(); renderPage(gridEl); renderPagination(gridEl);
+  });
   filtersEl.innerHTML = `<button class="filter-btn active" data-cat="All">All</button>`;
   const cats = [...new Set(allItems.map(i => i.category).filter(Boolean))];
-  cats.forEach(cat => {
+  cats.forEach
+  (cat => {
     const color = CATEGORY_CONFIG[cat] || "#64748b";
     filtersEl.innerHTML += `<button class="filter-btn" data-cat="${cat}" style="--cat:${color}">${cat}</button>`;
   });
@@ -151,6 +177,22 @@ function applyFilters() {
     const matchSearch = item.name && item.name.toLowerCase().includes(searchQuery);
     return matchCat && matchSearch;
   });
+
+  const DEMAND_ORDER = { "very high": 5, "high": 4, "decent": 3, "medium": 2, "low": 1, "very low": 0 };
+
+  if (sortKey === "name-asc") {
+    filteredItems.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortKey === "name-desc") {
+    filteredItems.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (sortKey === "value-desc"||sortKey === "default") {
+    filteredItems.sort((a, b) => numVal(b.value) - numVal(a.value));
+  } else if (sortKey === "value-asc") {
+    filteredItems.sort((a, b) => numVal(a.value) - numVal(b.value));
+  } else if (sortKey === "demand-desc") {
+    filteredItems.sort((a, b) => (DEMAND_ORDER[(b.demand||"").toLowerCase()] ?? -1) - (DEMAND_ORDER[(a.demand||"").toLowerCase()] ?? -1));
+  } else if (sortKey === "demand-asc") {
+    filteredItems.sort((a, b) => (DEMAND_ORDER[(a.demand||"").toLowerCase()] ?? -1) - (DEMAND_ORDER[(b.demand||"").toLowerCase()] ?? -1));
+  }
 }
 
 function renderPage(gridEl) {
@@ -193,12 +235,11 @@ function renderCards(items, gridEl) {
     return;
   }
   items.forEach((item, idx) => {
-    const color = CATEGORY_CONFIG[item.category] || "#64748b";
+    const color = CATEGORY_CONFIG[item.category] || "#a0c3f5";
     const card  = document.createElement("div");
     card.className = "value-card clickable-card";
     card.style.borderColor = color;
-    card.innerHTML = `
-      <h3>${item.name}</h3>
+    card.innerHTML = `<h3>${item.name}</h3>
       <span class="category-badge" style="background:${color}20;color:${color}">${item.category}</span>
       <div class="value-row">
         <span>Cash Value</span>
