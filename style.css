@@ -48,6 +48,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   direction: ltr;
+  text-wrap: balance;
+  
 }
 
 body::before {
