@@ -26,7 +26,7 @@ const DEMAND_CONFIG = {
   "medium":    { requestAdj:          0, upgradeMulti: 0.8  },
   "low":       { requestAdj: -1_000_000, upgradeMulti: 1.2  },
   "very low":  { requestAdj: -1_500_000, upgradeMulti: 1.5  },
-  "close to none": { requestAdj: -2_000_000, upgradeMulti: 1.7},
+  "close to none": { requestAdj: -2_000_000, upgradeMulti: 2},
 };
 
 // Demand tier → numeric rank for comparison
@@ -39,7 +39,7 @@ function demandRank(d) {
   if (k === "low")       return 2;
   if (k === "very low")  return 1;
   if (k === "close to none") return 0;
-  return 3; // unknown → treat as decent
+  return 4; // unknown → treat as decent
 }
 
 // Upgrade OP:
@@ -47,7 +47,7 @@ function demandRank(d) {
 //   if offering lower-demand items (harder to re-trade) → scale UP (they need more OP).
 //   if offering higher-demand items (easy to move) → scale DOWN (less OP needed).
 function calcUpgradeOP(offeringItems, requestingItems, totalOfferValue, stackBonus) {
-  const BASE_OP = 500_000;
+  const BASE_OP = requestingItems<20_000_000? 500_000:1_000_000;
 
   const offerAvgRank   = offeringItems.reduce((s,i)  => s + demandRank(i.demand), 0) / offeringItems.length;
   const requestAvgRank = requestingItems.reduce((s,i) => s + demandRank(i.demand), 0) / requestingItems.length;
@@ -83,9 +83,9 @@ function calcUpgradeOP(offeringItems, requestingItems, totalOfferValue, stackBon
 // Positive = WIN for offerer (getting more than giving)
 const VERDICT_BANDS = [
   { min:  2_000_000, label: "Big Win 🔥",  cls: "verdict-bigwin"  },
-  { min:    500_000, label: "Win ✅",       cls: "verdict-win"     },
+  { min:    1000_000, label: "Win ✅",      cls: "verdict-win"     },
   { min:   -500_000, label: "Fair ⚖️",     cls: "verdict-fair"    },
-  { min: -2_000_000, label: "Loss ❌",      cls: "verdict-loss"    },
+  { min: -2_000_000, label: "Loss ❌",     cls: "verdict-loss"    },
   { min: -Infinity,  label: "Big Loss 💀", cls: "verdict-bigloss" },
 ];
 

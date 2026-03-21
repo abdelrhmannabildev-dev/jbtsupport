@@ -361,7 +361,7 @@ function renderSearchResults() {
       <div class="value-row"><span>Value</span><strong>${fmt(item.value)}</strong></div>
       <div class="value-row" style="align-items:center"><span>Demand</span>${demandBadge(item.demand)}</div>
       <button class="hoard-toggle-btn ${isHoarded ? "hoard-active" : ""}" data-name="${item.name}">
-        ${isHoarded ? "âœ“ Hoarding" : "+ Add to Hoard"}
+        ${isHoarded ? "Hoarding" : "+ Add to Hoard"}
       </button>
     `;
 

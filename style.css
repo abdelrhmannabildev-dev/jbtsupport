@@ -903,13 +903,15 @@ body::before {
 }
 /* Chrome, Edge, Safari */
 #pagination-top > input::-webkit-outer-spin-button,
-#pagination-top > input::-webkit-inner-spin-button {
+#pagination-top > input::-webkit-inner-spin-button ,
+.pagination input::-webkit-outer-spin-button,
+.pagination input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-#pagination-top > input[type=number] {
+#pagination-top > input[type=number] , .pagination input[type=number] {
   -moz-appearance: textfield;
 }
 /* Controls row: number format + sort */
