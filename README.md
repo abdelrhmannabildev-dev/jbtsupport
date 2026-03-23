@@ -150,7 +150,7 @@ No installation required. Clone the repository and open `index.html` in any mode
 
 ```bash
 git clone https://github.com/abdelrhmannabildev-dev/jbtsupport
-cd jailbreak-exchange
+cd jbtsupport
 open index.html
 ```
 
