@@ -76,6 +76,7 @@ function route() {
 
 window.addEventListener("popstate", route);
 
+
 function navigate(url) {
   history.pushState({}, "", url);
   route();

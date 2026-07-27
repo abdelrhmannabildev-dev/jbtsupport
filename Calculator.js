@@ -47,7 +47,7 @@ function demandRank(d) {
 //   if offering lower-demand items (harder to re-trade) → scale UP (they need more OP).
 //   if offering higher-demand items (easy to move) → scale DOWN (less OP needed).
 function calcUpgradeOP(offeringItems, requestingItems, totalOfferValue, stackBonus) {
-  const BASE_OP = requestingItems<20_000_000? 500_000:1_000_000;
+  const BASE_OP = requestingItems < 20_000_000 ? 500_000 : 1_000_000;
 
   const offerAvgRank   = offeringItems.reduce((s,i)  => s + demandRank(i.demand), 0) / offeringItems.length;
   const requestAvgRank = requestingItems.reduce((s,i) => s + demandRank(i.demand), 0) / requestingItems.length;
